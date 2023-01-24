@@ -42,7 +42,7 @@ docker build --no-cache --pull --tag ingv/ttime .
 ### Run as a service
 run the container in daemon (`-d`) mode:
 ```
-docker run -it --name flask_ttime -p 8383:5000 -d --user $(id -u):$(id -g) --rm ingv/ttime
+docker run -it --rm --name flask_ttime -p 8383:5000 -d --user $(id -u):$(id -g) ingv/ttime
 docker exec -i flask_ttime tail -f /opt/log/ttime.log
 ```
 
@@ -50,7 +50,7 @@ Then test access to http://localhost:8383/.
 
 Examples of URL:
 
-- http://localhost:8383/api/get_phase_circle?lat=35&lon=12&depth=33&time=200&phase=P&azimuth_interval=90
+- http://localhost:8383/api/get_phase_circle?lat=45.492599&lon=9.19289&depth=50&time=100&phases=P%2CS&azimuth_interval=30
 
 ## Contribute
 Thanks to your contributions!
