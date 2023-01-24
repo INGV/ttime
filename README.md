@@ -1,83 +1,68 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+[![License](https://img.shields.io/github/license/INGV/ttime.svg)](https://github.com/INGV/ttime/blob/main/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/INGV/ttime.svg)](https://github.com/INGV/ttime/issues)
 
-- [ttime](#ttime)
-  - [Introduction](#introduction)
-  - [Usage](#usage)
-    - [Docker image](#docker-image)
-      - [Option  one. Get the last built image from Docker Hub repository](#option--one-get-the-last-built-image-from-docker-hub-repository)
-      - [Option  two. Build the image by yourself](#option--two-build-the-image-by-yourself)
-    - [Run Docker](#run-docker)
-    - [call REST service](#call-rest-service)
-      - [with curl:](#with-curl)
-      - [with swagger](#with-swagger)
-  - [Authors](#authors)
+[![Docker build](https://img.shields.io/badge/docker%20build-from%20CI-yellow)](https://hub.docker.com/r/ingv/ttime)
+![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/ingv/ttime?sort=semver)
+![Docker Pulls](https://img.shields.io/docker/pulls/ingv/ttime)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+[![CI](https://github.com/INGV/ttime/actions/workflows/docker-image.yml/badge.svg)](https://github.com/INGV/ttime/actions)
+[![GitHub](https://img.shields.io/static/v1?label=GitHub&message=Link%20to%20repository&color=blueviolet)](https://github.com/INGV/ttime)
 
-
-
-# ttime
+# ttime - Travel Time
 
 ## Introduction
-This project implement the web services for calculating travel time
+This project implement the web services to calculate travel time
 
+## Quickstart
+### Get Docker image
+To obtain *ttime* docker image, you have two options:
 
-
-## Usage
-Make sure you have `docker` installed
-
-### Docker image
-
-#### Option  one. Get the last built image from Docker Hub repository
-
-```
+#### 1) Get built image from DockerHub (*preferred*)
+Get the last built image from DockerHub repository:
+```sh
 docker pull ingv/ttime:latest
 ```
 
-
-
-#### Option  two. Build the image by yourself
-
-```
-git clone https://gitlab+deploy-token-145:spGK6LimgbJhetYr5VDN@gitlab.rm.ingv.it/docker/ttime.git
+#### 2) Build by yourself
+Clone the git repositry:
+```sh
+git clone https://github.com/INGV/ttime.git
 cd ttime
-docker build --tag ingv/ttime .
+```
+build the image:
+```sh
+docker build --tag ingv/ttime . 
 ```
 
-
-
-### Run Docker 
-
-staying inside `ttime` folder ...
-
+in case of errors, try:
+```sh
+docker build --no-cache --pull --tag ingv/ttime . 
 ```
-docker run -it --name flask_ttime -p [YOUR-PORT]:5000 -d --user $(id -u):$(id -g) --rm ingv/ttime
+
+### Run as a service
+run the container in daemon (`-d`) mode:
+```
+docker run -it --name flask_ttime -p 8383:5000 -d --user $(id -u):$(id -g) --rm ingv/ttime
 docker exec -i flask_ttime tail -f /opt/log/ttime.log
 ```
 
-### call REST service
+Then test access to http://localhost:8383/.
 
-#### with curl:
+Examples of URL:
 
-```
-curl "http://[HOST]:[YOUR-PORT]/api/get_phase_circle?lat=35&lon=12&depth=33&time=200&phase=P&azimuth_interval=90"
+- http://localhost:8383/api/get_phase_circle?lat=35&lon=12&depth=33&time=200&phase=P&azimuth_interval=90
 
-```
+## Contribute
+Thanks to your contributions!
 
-#### with swagger
-
-from web browser ...
-
-```
-http://[HOST]:[YOUR-PORT]
-```
-
-
-
+Here is a list of users who already contributed to this repository: \
+<a href="https://github.com/ingv/ttime/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ingv/ttime" />
+</a>
 
 ## Authors
-(c) 2021 Sergio Bruni sergio.bruni[at]ingv.it, Fabrizio Bernardi fabrizio.bernardi[at]ingv.it, Valentino Lauciani valentino.lauciani[at]ingv.it
+(c) 2023 Sergio Bruni sergio.bruni[at]ingv.it \
+(c) 2023 Fabrizio Bernardi fabrizio.bernardi[at]ingv.it \
+(c) 2023 Valentino Lauciani valentino.lauciani[at]ingv.it
 
 Istituto Nazionale di Geofisica e Vulcanologia, Italia
