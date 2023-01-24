@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  title: travel-time open api
+  description: tsunami open api
+  contact:
+    name: Sergio Bruni
+    email: sergio.bruni@ingv.it
+  version: 1.0.0
+servers:
+  - url: 'http://docker.int.ingv.it:8091'
+paths:
+  /api/get_phase_circle:
+    description: Get travel time
+    get:
+      description: Operation to get travel time
+      parameters:
+        - $ref: 'https://ingv.github.io/openapi/definitions.yaml#/components/parameters/lat'
+          required: true
+        - $ref: 'https://ingv.github.io/openapi/definitions.yaml#/components/parameters/lon'
+          required: true
+        - in: query
+          name: depth
+          description: Depth in kilometers
+          required: true
+          schema:
+            type: integer
+            example: 50
+        - in: query
+          name: time
+          description: Seconds elapsed from the origin time to the current time
+          required: true
+          schema:
+            type: integer
+            example: 100
+        - in: query
+          name: phases
+          description: comma separated list of phases.Admitted values:(P,PKP,PKiKP,Pdiff,S,SKS,Sdiff)
+          required: true
+          schema:
+            type: string
+            example: P,S
+        - in: query
+          name: azimuth_interval
+          description: Step amplitude in degrees between two points of the travel representation circle
+          required: false
+          schema:
+            type: integer
+            example: 30
+      responses:
+        '200':
+          description: Succesfull Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success_result'
+        '500':
+          description: Fail Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_result'
+
+components:
+  schemas:
+    geometry:
+      type: object
+      properties:
+        type:
+          type: string
+          example: Poligon
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: array
+              items:
+                type: integer
+                minItems: 2
+                maxItems: 2
+    properties:
+      type: object
+      properties:
+        phase_name:
+          type: string
+          example: P
+        file_name:
+          type: string
+          example: ttimes_P.json
+    feature:
+      type: object
+      properties:
+        type:
+          type: string
+          example: feature
+        geometry:
+          $ref: '#/components/schemas/geometry'
+        properties:
+          $ref: '#/components/schemas/properties'
+
+    FeatureCollection:
+      type: object
+      properties:
+        type:
+            type: string
+            example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/feature'
+
+    success_result:
+      type: object
+      properties:
+        error:
+            type: string
+            example: null
+        detail:
+          type: string
+          example: null
+        data:
+          type: object
+          $ref: '#/components/schemas/FeatureCollection'
+
+    error_result:
+      type: object
+      properties:
+        error:
+            type: string
+            enum:
+              - MISSING_PARAMETER
+              - PARAMETER_VALUE_NOT_VALID
+              - GENERIC_ERROR
+              - UNEXPECTED_ERROR
+              - PARAMETER_VALUE_NOT_VALID
+        detail:
+          type: string
+          example: error details
