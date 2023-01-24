@@ -49,7 +49,7 @@ jobs:
           provider: dockerhub
           destination_container_repo: ingv/ttime
           readme_file: 'README.md'
-          short_description: 'my short description 😊'
+          short_description: 'Travel Time Web Service'
         
       #- uses: actions/checkout@v3
       #- name: Build the Docker image
