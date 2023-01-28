@@ -46,7 +46,7 @@ docker run -it --rm --name flask_ttime -p 8383:5000 -d --user $(id -u):$(id -g) 
 docker exec -i flask_ttime tail -f /opt/log/ttime.log
 ```
 
-Then test access to http://localhost:8383/.
+Then test access to: http://localhost:8383/
 
 Examples of URL:
 
