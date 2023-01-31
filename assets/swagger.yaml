@@ -7,7 +7,6 @@ info:
     email: sergio.bruni@ingv.it
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8383'
 paths:
   /api/get_phase_circle:
     description: Get travel time
