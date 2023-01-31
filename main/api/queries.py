@@ -113,12 +113,12 @@ if __name__ == '__main__':
                        #default='assets/json/input_parameters.json')
     #group.add_argument('-d', '--json_data', help='input json formatted data')
 
-    parser.add_argument("lat", type=float, help="45.492599")
-    parser.add_argument("lon", type=float, help="9.19289")
-    parser.add_argument("depth", type=int, help="50")
-    parser.add_argument("time", type=int, help="100")
-    parser.add_argument("phases", type=str, action=SplitArgs, help="S,P")
-    parser.add_argument("azimuth_interval", type=int, default=1, help="30")
+    parser.add_argument("-l", "--lat", type=float, help="45.492599")
+    parser.add_argument("-o", "--lon", type=float, help="9.19289")
+    parser.add_argument("-d", "--depth", type=int, help="50")
+    parser.add_argument("-t", "--time", type=int, help="100")
+    parser.add_argument("-p", "--phases", type=str, action=SplitArgs, help="S,P")
+    parser.add_argument("-a", "--azimuth_interval", type=int, default=1, help="30")
 
     args = parser.parse_args()
     queries = Queries()
