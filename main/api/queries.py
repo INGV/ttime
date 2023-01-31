@@ -1,6 +1,11 @@
+
 from contextlib import closing
 import json
 import simplejson
+
+import sys
+sys.path.append('.')
+
 from datetime import date, time, datetime, timedelta
 from flask_api import status as http_status_code
 from main.api.phase import Phase
@@ -24,6 +29,7 @@ class Queries(object):
 
     def get_phase_circle(self, request):
         args = request.args
+
         # for key, value in args.items():
         #     print(f'{key}={value}')
 
@@ -48,7 +54,7 @@ class Queries(object):
                 #confronto tra due liste
                 if not all(elem in self.all_phases for elem in phases):
                     ret_data['error'] = "PARAMETER_VALUE_NOT_VALID"
-                    ret_data['detail'] = f"Value of parameter phases must be 'P' or 'S'. Received [{args['phases']}]"
+                    ret_data['detail'] = f"Value of parameter phases must be between {self.all_phases}. Received [{args['phases']}]"
                     return json.dumps(ret_data), http_status_code.HTTP_200_OK
                 phases = list(set(phases))
             azimuth_interval = 1
@@ -73,10 +79,79 @@ class Queries(object):
                 ret_data['detail'] = error
 
             ret_data['data'] = data
+
+
             return simplejson.dumps(ret_data, ignore_nan=True), http_status_code.HTTP_200_OK
+
             #return json.dumps(ret_data, default=Queries.dateConverter), http_status_code.HTTP_200_OK
 
         except Exception as e:
             ret_data['error'] = "UNEXPECTED_ERROR"
             ret_data['detail'] = str(e)
             return json.dumps(ret_data), http_status_code.HTTP_200_OK
+
+
+#"python main/api/queries.py"
+
+if __name__ == '__main__':
+    import argparse
+    #import util
+    #from flask import Response
+
+    class SplitArgs(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            setattr(namespace, self.dest, list(set(values.replace(" ", "").split(','))))
+
+
+
+    parser = argparse.ArgumentParser(description='travel time',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    #group = parser.add_mutually_exclusive_group()
+    #group.add_argument('-f', '--json_data_file', help='input json formatted data-file-path',
+                       #default='assets/json/input_parameters.json')
+    #group.add_argument('-d', '--json_data', help='input json formatted data')
+
+    parser.add_argument("lat", type=float, help="45.492599")
+    parser.add_argument("lon", type=float, help="9.19289")
+    parser.add_argument("depth", type=int, help="50")
+    parser.add_argument("time", type=int, help="100")
+    parser.add_argument("phases", type=str, action=SplitArgs, help="S,P")
+    parser.add_argument("azimuth_interval", type=int, default=1, help="30")
+
+    args = parser.parse_args()
+    queries = Queries()
+
+    ret_data = {
+        "error": None,
+        "detail": None,
+        "data": None
+    }
+
+    if not all(elem in queries.all_phases for elem in args.phases):
+        ret_data['error'] = "PARAMETER_VALUE_NOT_VALID"
+        ret_data['detail'] = f"Value of parameter phases must be between {queries.all_phases}. Received [{args.phases}]"
+        print(simplejson.dumps(ret_data, ignore_nan=True))
+        exit(0)
+
+    phase = Phase(
+        phases_data=queries.phases_data,
+        lat=args.lat,
+        lon=args.lon,
+        depth=args.depth,
+        time=args.time,
+        phases=args.phases,
+        azimuth_interval=args.azimuth_interval
+    )
+
+    # data, error = phases.get_geojson()
+    data, error = phase.get_geojson()
+
+
+
+    if error:
+        ret_data['error'] = "GENERIC_ERROR"
+        ret_data['detail'] = error
+
+    ret_data['data'] = data
+
+    print(simplejson.dumps(ret_data, ignore_nan=True))
